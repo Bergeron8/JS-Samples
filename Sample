@@ -1,0 +1,591 @@
+let objectInfo = {
+    canvas: null,
+    context: null,
+    context1: null,
+    numberOfFrames: 4,      
+    image: null,
+    imageWidth: 460,
+    imageHeight: 600,
+    frameIndex: 1,
+    frameWidth: 0,
+    frameHeight: 0,
+    msInterval: 250,
+    rows: 4,
+    cols: 4,
+    SrcY: 0,
+    SrcX: 0,
+    down: 0,
+    right:1,
+    left: 2,
+    up: 3,
+    x: 550,
+    y: 250,
+    video: null,
+};
+/// 600
+/// 460.25
+const imageFile = "SpriteSheet2.png";
+//////////////////suck my assssssss js
+// Post DOM load anonymous function
+
+window.onload = function() {
+    /// Global things
+    objectInfo.video = document.getElementById("video");
+    objectInfo.canvas  = document.querySelector("#myCanvas");
+    objectInfo.context = objectInfo.canvas.getContext("2d");
+    objectInfo.context1 = objectInfo.canvas.getContext("2d");
+    objectInfo.image = new Image();
+    setInterval(dV, 0);
+    objectInfo.image.addEventListener('error', function() {
+        alert("Invalid image file");
+    });
+
+    // Image load complete callback
+    objectInfo.image.onload = function() {
+        // The this object refers to image because within image onload event handler
+        objectInfo.imageWidth = this.width
+        objectInfo.imageHeight = this.height;    
+        // Calculate framewidth (size of each sprite)
+        objectInfo.frameWidth = objectInfo.imageWidth / objectInfo.cols;
+        objectInfo.frameHeight = objectInfo.imageHeight / objectInfo.rows;
+        // Setup animation loop will be changed to on key push
+        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keyup", handleKeyDown);
+        animateImage();
+    };
+    objectInfo.image.src = imageFile;
+};
+
+function pV() {
+  if (objectInfo.x <= 100 & objectInfo.y <= 100) {
+  objectInfo.video.play();
+} }
+
+function animateImage() {
+    console.log(`animate: ${objectInfo.frameIndex} - ${objectInfo.frameIndex * objectInfo.frameWidth} - ${objectInfo.x} ${objectInfo.y} - ${objectInfo.SrcY} - ${objectInfo.SrcY * objectInfo.frameHeight} `);
+    let frameWidth = objectInfo.frameWidth;
+    let frameHeight = objectInfo.frameHeight;
+   // objectInfo.context.clearRect(0,0,1200,600);
+   objectInfo.context.clearRect(objectInfo.x -10, objectInfo.y -10, frameWidth +50, frameHeight + 50);
+    //let command = window.addEventListener("keydown", handleKeyDown);
+    // context.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh)
+    objectInfo.context.drawImage(objectInfo.image, objectInfo.frameIndex * frameWidth, objectInfo.SrcY * frameHeight, frameWidth -3, frameHeight -3, objectInfo.x, objectInfo.y, frameWidth, frameHeight);
+    objectInfo.frameIndex++ ;
+    if (objectInfo.frameIndex >= objectInfo.numberOfFrames) {
+        objectInfo.frameIndex = 0;
+      }
+    if (objectInfo.x >= 1200) {
+      objectInfo.x =1200;
+    }
+    if (objectInfo.y >=600) {
+      objectInfo.y = 600;
+    }
+}
+
+function IfSpace() {
+   if (objectInfo.x <= 100 & objectInfo.y <= 100) {
+      dV();
+      pV();
+    }
+    else {
+      fuckYou();
+    }
+}
+
+function fuckYou(){ 
+     objectInfo.video.pause(); 
+   }
+
+function dV() {
+    //console.log("process frame");
+    if (objectInfo.x <= 100 & objectInfo.y <= 100) {
+    objectInfo.context.drawImage(objectInfo.video, 800, 400, 400, 250);
+    }
+    if (objectInfo.x  > 100 && objectInfo.x < 130)  {
+      objectInfo.context.clearRect(800, 400, 400, 250);
+    }
+    if (objectInfo.y >  100 && objectInfo.y < 130) {
+      objectInfo.context.clearRect(800, 400, 400, 250);
+    }
+}
+
+function handleKeyDown(event) {
+    console.log(event.keyCode);
+    console.log(event.type);
+    console.log(String.fromCharCode(event.keyCode))
+      //left
+      if (event.keyCode == 37) {
+         objectInfo.x -= 10;
+         animateImage();
+         IfSpace();
+         objectInfo.SrcY = objectInfo.left;
+         
+      if (objectInfo.x <= 0) {
+          objectInfo.x +=10;
+         }
+      }
+      // up
+      if (event.keyCode == 38) {
+        objectInfo.y -=10;
+        animateImage();
+        IfSpace();
+        objectInfo.SrcY = objectInfo.up;
+      if (objectInfo.y <= 0) {
+        objectInfo.y +=10;
+      }
+      }
+      //right
+      if (event.keyCode == 39) {
+         objectInfo.x += 10;
+         animateImage();
+         IfSpace();
+      objectInfo.SrcY = objectInfo.right;
+      if (objectInfo.x >= 1100) {
+        objectInfo.x -= 10;
+      }
+      }
+      //down
+      if (event.keyCode == 40) {
+        objectInfo.y += 10;
+        animateImage();
+        IfSpace();
+        objectInfo.SrcY = objectInfo.down;
+      if (objectInfo.y >= 460) {
+        objectInfo.y -= 10;
+      }
+      }
+}
+
+"use strict";
+let globalInfo = {
+    intervalID: -1,                     // setInterval ID
+    animationFrameID: -1,               // animationFrame ID
+    animationFramePrevTimeStamp: 0,     // animationFrame previous timestamp
+    animationFrameCount: 0,             // frame count (number of times draw called since last reset)
+    canvas: null,                       // canvas HTML element reference
+    context: null,                      // canvas context reference
+    score: 0,
+    rectangle: {
+                            // rectangle shape properties
+        width: 120,
+        height: 20,
+        x:170,
+        y:330, 
+},
+    circle: {                           // circle shape properties
+    radius: 11,
+    radius1: 11, 
+}, 
+    x: 0,                               // current x position (top-left corner) of shape
+    y: 0,                               // current y position (top-left corner) of shape
+    dX: 1,                              // amount to add to x each redraw
+    dY: 1,                              // amount to add to y each redraw
+    dX1: 1,
+    dY1: 1,
+    mouseX: 0,
+    mouseY: 0,
+    mouseDown: false,
+    mouseW: 12,
+    mouseH: 12,
+    GodMode: 0,
+    Speed: 0,
+    balls: 0,
+    x1: 200,
+    y1: 200,
+    themeBall: 'orange',
+    themeRec:  'orange',
+    themeBac:  'black',
+    themeText: 'orange',
+    counter: 0,
+    counter1:0,
+    degradeCount:0,
+    dcount: 0,
+    };
+    
+    
+    /*objectInfo.frameIndex++ ;
+    if (objectInfo.frameIndex >= objectInfo.numberOfFrames) {
+        objectInfo.frameIndex = 0;
+      }
+    if (objectInfo.x >= 1200) {
+      objectInfo.x =1200;
+    }
+    if (objectInfo.y >=600) {
+      objectInfo.y = 600;
+    } */
+
+
+    function drawRect() {
+    globalInfo.context.beginPath();
+    globalInfo.context.fillStyle = globalInfo.themeRec;
+    if (globalInfo.degradeCount == 1){
+        globalInfo.context.rect(globalInfo.rectangle.x, globalInfo.rectangle.y, globalInfo.rectangle.width, globalInfo.rectangle.height);
+    }
+    if (globalInfo.degradeCount == 0 ) {
+            globalInfo.context.rect(globalInfo.rectangle.x, globalInfo.rectangle.y, globalInfo.rectangle.width, globalInfo.rectangle.height);
+        }
+    globalInfo.context.fill();
+    globalInfo.context.closePath();
+    globalInfo.context.stroke();
+}
+
+window.onload = function() {
+    // Get canvas and canvas context objects
+    globalInfo.canvas  = document.querySelector("#myCanvas");
+    globalInfo.context = globalInfo.canvas.getContext("2d");
+    let checkbox = document.querySelector("#GodMode");
+    checkbox.addEventListener( 'change', handleCheck);
+    let checkbox1 = document.querySelector("#IncreaseSpeed");
+    checkbox1.addEventListener( 'change', handleCheck1);
+      let checkbox2 = document.querySelector("#Degrading");
+    checkbox2.addEventListener( 'change', handleCheck1);
+    let checkbox3 = document.querySelector("#MbM");
+    checkbox3.addEventListener( 'change', handleCheck3);
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyDown);
+    document.querySelector('#reset').addEventListener('click', reset);
+    let dropdown = document.getElementById('ThemeDropdown');
+    dropdown.addEventListener('change',function(){
+        if (dropdown.value < 0) {
+            alert(dropdown.value);
+        }  
+        else if (dropdown.value == 1) {
+        globalInfo.themeBall = 'green';
+        globalInfo.themeRec  = 'black';
+        globalInfo.themeBac  = 'yellow';
+        globalInfo.themeText = 'black';
+        console.log("ball check");
+        }  
+        else if (dropdown.value == 2) {
+        globalInfo.themeBall = 'blue';
+        globalInfo.themeRec  = 'red';
+        globalInfo.themeBac  = 'white';
+        globalInfo.themeText = 'red';
+        console.log("ball check");
+        }
+        else if (dropdown.value == 3) {
+        globalInfo.themeBall = 'skyblue';
+        globalInfo.themeRec  = 'aqua';
+        globalInfo.themeBac  = 'blue';
+        globalInfo.themeText = 'white';
+        console.log("ball check");
+        }
+    });
+    globalInfo.canvas.addEventListener("mousemove", handleMouseMove);
+    globalInfo.canvas.addEventListener("mouseout", handleMouseMove, false);
+    globalInfo.canvas.addEventListener('mouseup', handleMouseUp);
+    globalInfo.canvas.addEventListener('mousedown', handleMouseDown);
+    paintWithAnimationFrame();
+    drawBac();
+    drawRect();
+    drawText();
+    drawBall();
+    console.log(`dx: ${globalInfo.dX} - ${globalInfo.dY}`);
+}
+
+function drawBac() {
+        globalInfo.context.fillStyle = globalInfo.themeBac;
+        globalInfo.context.fillRect(0,0,globalInfo.canvas.width, globalInfo.canvas.height);
+}
+
+function handleMouseDown(event) {
+    console.log('handleMouseDown');
+
+   globalInfo.mouseDown = true;
+}
+function reset() {
+    globalInfo.x = 100;
+    globalInfo.y = 100;
+    globalInfo.score = 0;
+    globalInfo.dX = 1;
+    globalInfo.dY = 1;
+    globalInfo.x1 = 200;
+    globalInfo.y1 = 100;
+    globalInfo.dX1 = 1;
+    globalInfo.dY1 = 1;
+}
+
+function handleMouseUp(event) {
+    console.log('handleMouseUp');
+    globalInfo.mouseDown = false;
+}
+
+ function handleMouseMove(event) {
+    console.log('handleMouseMove');
+       globalInfo.mouseX = event.clientX - globalInfo.canvas.offsetLeft;
+       globalInfo.mouseY = event.clientY - globalInfo.canvas.offsetTop;
+   globalInfo.rectangle.x = globalInfo.mouseX;
+   if (globalInfo.rectangle.x <= 0) {
+    globalInfo.rectangle.x =- globalInfo.rectangle.x;
+   }
+   if (globalInfo.rectangle.x >= globalInfo.canvas.width - globalInfo.rectangle.width) {
+    globalInfo.rectangle.x = globalInfo.canvas.width - globalInfo.rectangle.width;
+   }
+}
+
+// Redraw function - all drawing within this function
+function drawBall () {
+    // Clear entire canvas
+    globalInfo.context.clearRect(0, 0, globalInfo.canvas.width, globalInfo.canvas.height);
+    // Shift image location
+    globalInfo.x = globalInfo.x + globalInfo.dX;
+    globalInfo.y = globalInfo.y + globalInfo.dY;
+    // Bouncing
+    // Calculate shape "width" and "height" based on selected shape
+    let shapeWidth = (globalInfo.circle.radius * 2);
+    let shapeHeight = (globalInfo.circle.radius * 2);
+    let padding = 1;
+    
+    // Change shape position
+    if (globalInfo.x <= 0 || globalInfo.x >= globalInfo.canvas.width - shapeWidth) {
+        globalInfo.dX =- globalInfo.dX; }
+    if (globalInfo.y <= 0) {
+        globalInfo.dY =- globalInfo.dY; }
+    // check box switch
+    if (globalInfo.GodMode == 0) {
+    if (globalInfo.y >= globalInfo.canvas.height - shapeHeight) {
+        globalInfo.y =  Math.floor(Math.random() * 51);
+        globalInfo.x =  Math.floor(Math.random() * 400);
+        globalInfo.score++;
+    }
+}
+// check box switch
+if (globalInfo.GodMode == 1) {
+    if (globalInfo.y >= globalInfo.canvas.height - shapeHeight - 3) {
+        globalInfo.dY =- globalInfo.dY;
+        globalInfo.dX =- globalInfo.dX; 
+    }
+}
+// paddle boundry 
+if (globalInfo.Speed == 0){
+    if ((globalInfo.x + shapeWidth) >= (globalInfo.rectangle.x)  
+    && (globalInfo.x - shapeWidth)  <= (globalInfo.rectangle.x + globalInfo.rectangle.width)
+    && (globalInfo.y + shapeHeight) >= (globalInfo.rectangle.y)
+    && (globalInfo.y - shapeHeight) <= (globalInfo.rectangle.y + globalInfo.rectangle.height)
+    ){
+        globalInfo.dY =- globalInfo.dY;
+                                                    
+        }
+}
+
+if(globalInfo.Speed == 1) {
+    if ((globalInfo.x + shapeWidth) >= (globalInfo.rectangle.x)  
+    && (globalInfo.x - shapeWidth)  <= (globalInfo.rectangle.x + globalInfo.rectangle.width)
+    && (globalInfo.y + shapeHeight) >= (globalInfo.rectangle.y)
+    && (globalInfo.y - shapeHeight) <= (globalInfo.rectangle.y + globalInfo.rectangle.height)
+    ){
+        globalInfo.counter++;
+        if(globalInfo.counter == 4) {
+        globalInfo.dY =+ 1;
+        globalInfo.dX =+ 1;
+        globalInfo.counter = 0;
+    }
+        globalInfo.dY =- globalInfo.dY;
+        }
+}
+
+ if (globalInfo.dX > 4 || globalInfo.dY > 4){
+    globalInfo.dY = 4;
+    globalInfo.dX = 4;
+
+        }
+        drawBac();
+    // Draw Cricle   
+    globalInfo.context.beginPath();
+    globalInfo.context.fillStyle = globalInfo.themeBall;
+    globalInfo.context.arc(globalInfo.x + globalInfo.circle.radius, globalInfo.y + globalInfo.circle.radius, globalInfo.circle.radius, 0, 2*Math.PI);
+    globalInfo.context.fill();
+    globalInfo.context.closePath();
+    globalInfo.context.stroke();
+}
+
+function handleCheck() {
+    if(this.checked) {
+        // Checkbox is checked..
+        globalInfo.GodMode = 1;
+        console.log("fuck")
+    } else {
+        console.log("fuck!!!!")
+        globalInfo.GodMode = 0
+}
+}
+
+function handleCheck1() {
+    if(this.checked) {
+        // Checkbox is checked..
+        globalInfo.Speed = 1;
+        console.log("fuck you")
+    } else {
+        console.log("fuck me")
+        globalInfo.Speed = 0;
+}
+}
+
+
+function handleCheck2() {
+
+    if(this.checked) {
+        // Checkbox is checked..
+    globalInfo.degradeCount = 1; 
+        console.log("fuck you")
+    } else {
+    globalInfo.degradeCount = 0; 
+        console.log("fuck me")
+}
+}
+
+
+
+function handleCheck3() {
+    if(this.checked) {
+        // Checkbox is checked..
+        globalInfo.balls = 1;
+        console.log("ball check")
+    } else {
+        console.log("fuck me")
+        globalInfo.balls = 0;
+}
+}
+
+function paintWithAnimationFrame (timeStamp) {
+    // Used for drawing when using animationFrame
+    // Includes calcuation to determine current frames per second (fps), should be around 60, typical browser target
+    if (timeStamp) {
+        if (globalInfo.animationFramePrevTimeStamp > 0) {
+            globalInfo.animationFrameCount++;
+            if (globalInfo.animationFrameCount > 0) {
+                let fps = (globalInfo.animationFrameCount / (timeStamp - globalInfo.animationFramePrevTimeStamp) * 1000).toFixed(1);
+                globalInfo.animationFrameCount = 0;
+            }
+        }
+        globalInfo.animationFramePrevTimeStamp = timeStamp;
+    }
+    // Call routine to draw on canvas
+    drawBall();
+    drawRect();
+    drawText();
+    if (globalInfo.balls == 1){
+        drawBall2();
+    }
+    console.log(globalInfo.dcount);
+    globalInfo.animationFrameID = requestAnimationFrame(paintWithAnimationFrame);
+}
+
+function drawText() {
+globalInfo.context.font = '14pt Calibri';
+globalInfo.context.textAlign =  'center';
+globalInfo.context.fillStyle = globalInfo.themeText;
+if (globalInfo.GodMode == 0) {
+globalInfo.context.fillText('Times You Failed: ' + globalInfo.score , globalInfo.canvas.width/2, 25);
+}
+if (globalInfo.GodMode == 1){
+    globalInfo.context.fillText("Weak Sauce Mode Enabled", globalInfo.canvas.width/2, 25);
+}
+}
+
+function handleKeyDown(event) {
+    console.log(event.keyCode);
+    console.log(event.type);
+    console.log(String.fromCharCode(event.keyCode))
+      //left
+      if (event.keyCode == 37) {
+        globalInfo.rectangle.x -= 10;
+      // boundry
+      if (globalInfo.rectangle.x <= 0) {
+          globalInfo.rectangle.x += 10;
+         }
+      }
+      //right
+      if (event.keyCode == 39) {
+         globalInfo.rectangle.x += 10;
+      // boundry
+      if (globalInfo.rectangle.x >= 450 - globalInfo.rectangle.width) {
+        globalInfo.rectangle.x -= 10;
+      }
+      }
+      }
+
+function drawBall2 () {
+    // Clear entire canvas
+    globalInfo.context.clearRect(globalInfo.x1 + globalInfo.circle.radius, globalInfo.y1 + globalInfo.circle.radius, globalInfo.circle.radius, 0, 2*Math.PI);
+    // Shift image location
+    globalInfo.x1 = globalInfo.x1 + globalInfo.dX1;
+    globalInfo.y1 = globalInfo.y1 + globalInfo.dY1;
+    // Bouncing
+    // Calculate shape "width" and "height" based on selected shape
+    let shapeWidth = (globalInfo.circle.radius1 * 2);
+    let shapeHeight = (globalInfo.circle.radius1 * 2);
+    let padding = 3;
+    
+    // Change shape position
+    if (globalInfo.x1 <= 0 || globalInfo.x1 >= globalInfo.canvas.width - shapeWidth) {
+        globalInfo.dX1 =- globalInfo.dX1; }
+    if (globalInfo.y1<= 0) {
+        globalInfo.dY1 =- globalInfo.dY1; }
+    // check box switch
+    if (globalInfo.GodMode == 0) {
+    if (globalInfo.y1 >= globalInfo.canvas.height - shapeHeight) {
+        globalInfo.y1 =  Math.floor(Math.random() * 51);
+        globalInfo.x1 =  Math.floor(Math.random() * 400);
+        globalInfo.score++;
+    }
+}
+// check box switch
+if (globalInfo.GodMode == 1) {
+    if (globalInfo.y1 >= globalInfo.canvas.height - shapeHeight -3) {
+        globalInfo.dY1 =- globalInfo.dY1;
+        globalInfo.dX1 =- globalInfo.dX1;
+    }
+}
+// paddle boundry 
+if (globalInfo.Speed == 0){
+    if ((globalInfo.x1 + shapeWidth) >= (globalInfo.rectangle.x)  
+    && (globalInfo.x1 - shapeWidth)  <= (globalInfo.rectangle.x + globalInfo.rectangle.width)
+    && (globalInfo.y1 + shapeHeight) >= (globalInfo.rectangle.y)
+    && (globalInfo.y1 - shapeHeight) <= (globalInfo.rectangle.y + globalInfo.rectangle.height)
+    ){
+        globalInfo.dY1 =- globalInfo.dY1;
+        }
+}
+
+if(globalInfo.Speed == 1) {
+    if ((globalInfo.x1 + shapeWidth) >= (globalInfo.rectangle.x)  
+    && (globalInfo.x1 - shapeWidth)  <= (globalInfo.rectangle.x + globalInfo.rectangle.width)
+    && (globalInfo.y1 + shapeHeight) >= (globalInfo.rectangle.y)
+    && (globalInfo.y1 - shapeHeight) <= (globalInfo.rectangle.y + globalInfo.rectangle.height)
+    ){
+        globalInfo.counter1++;
+        if(globalInfo.counter1 == 4) {
+        globalInfo.dY1 + .5;
+        globalInfo.dX1 + .5;
+        globalInfo.counter1 = 0;
+    }
+        globalInfo.dY1 =- globalInfo.dY1;
+        }
+}
+
+ if (globalInfo.dX1 > 4 || globalInfo.dY1 > 4){
+    globalInfo.dY1 = 4;
+    globalInfo.dX1 = 4;
+
+        }
+
+let dx = globalInfo.x - globalInfo.x1;
+let dy = globalInfo.y - globalInfo.y1;
+let distance = Math.sqrt(dx * dx + dy * dy);
+
+if (distance < globalInfo.circle.radius + globalInfo.circle.radius1) {
+    globalInfo.dY1 =- globalInfo.dY1;
+    globalInfo.dY =- globalInfo.dY
+}
+    // Draw Cricle   
+    globalInfo.context.beginPath();
+    globalInfo.context.fillStyle = globalInfo.themeBall;
+    globalInfo.context.arc(globalInfo.x1 + globalInfo.circle.radius1, globalInfo.y1 + globalInfo.circle.radius1, globalInfo.circle.radius1, 0, 2*Math.PI);
+    globalInfo.context.fill();
+    globalInfo.context.closePath();
+    globalInfo.context.stroke();
+}
+
+
+
